@@ -21,9 +21,12 @@ namespace TotemPoll.Views
 
     void When(VoteSaved e)
     {
-      Poll.Choices.First(a => a.Id.Equals(e.ChoiceId)).Votes++;
+      foreach (var choice in e.ChoiceIds)
+      {
+        Poll.Choices.First(a => a.Id.Equals(choice)).Votes++;
+      }
     }
-
+    
     void When(PollDeleted e)
     {
       ThenDone();

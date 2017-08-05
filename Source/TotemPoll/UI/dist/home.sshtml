@@ -1,30 +1,42 @@
 ﻿@Master['master.sshtml']
 @Section['Content']
-	@Partial['nav.sshtml'];
-	<div id="container">
-	  <div id="loading" v-if="!loaded">
-      <i class="fa fa-4x fa-pulse fa-spinner"></i>
-    </div>
 
-    <div id="polls">
-      <div class="panel panel-primary" v-for="poll in polls">
-        <div class="panel-heading">
-          <h3 class="panel-title">{{poll.question}}</h3>
-        </div>
-        <div class="panel-body">
-          <form>
-            <div class="form-group">
-              <div class="radio" v-for="choice in poll.choices">
-                <label>
-                  <input type="radio" :name="poll.id" :id="choice.id" :value="choice.text">
-                  {{choice.text}}
-                </label>
-              </div>
+<div id="loading" v-if="!loaded">
+  <i class="fa fa-4x fa-pulse fa-spinner"></i>
+</div>
+
+<div id="noPolls" v-if="noPolls">
+  <div class="alert alert-dismissible alert-info">
+    <button type="button" class="close" data-dismiss="alert">&times;</button>
+    <strong>Create your first poll!</strong> No polls have been created yet. <a href="/create" class="alert-link">Add your first poll</a>.
+  </div>
+</div>
+
+<div id="polls">
+  <div class="panel panel-primary" v-for="poll in polls">
+    <div class="panel-heading">
+      <h3 class="panel-title">{{poll.question}}</h3>
+    </div>
+    <div class="panel-body">
+      <div class="col-md-11 col-md-offset-1">
+        <form v-on:submit.prevent="saveVote($event, poll.id)">
+          <div class="form-group">
+            <div class="radio" v-for="choice in poll.choices">
+              <label>
+                <input type="radio" :name="poll.id" :id="choice.id" :value="choice.id" />
+                {{choice.text}}
+              </label>
             </div>
-          </form>
-        </div>
+          </div>
+          <div class="form-group">
+            <button class="btn btn-default">View Results</button>
+            <button type="submit" class="btn btn-primary">Vote</button>
+          </div>
+          <small>{{poll.totalVotes}} total votes</small>
+        </form>
       </div>
     </div>
+  </div>
+</div>
 
-	</div>
 @EndSection

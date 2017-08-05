@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using Nancy.Responses;
 using Nancy.Security;
 using Newtonsoft.Json;
@@ -18,13 +19,14 @@ namespace TotemPoll.Web
 
       Get<AllPollsView>("/api/polls");
       Get<SinglePollView>("/api/poll/{pollId}", a => a.pollId);
-      Post<VoteRequest>("/api/poll/{pollId}/choice/{choiceId}/vote", request => ProcessVoteRequest(request, Context.Parameters.pollId.Value, Context.Parameters.choiceId.Value));
+      Post<VoteRequest>("/api/poll/{pollId}/vote", request => ProcessVoteRequest(request, Request.Body, Context.Parameters.pollId.Value));
     }
 
-    private static VoteRequest ProcessVoteRequest(VoteRequest req, string pollId, string choiceId)
+    private static VoteRequest ProcessVoteRequest(VoteRequest req, Stream postBody, string pollId)
     {
+      var jsonBody = ParseJsonBody<JObject>(postBody);
       req.PollId = Id.From(pollId);
-      req.ChoiceId = Id.From(choiceId);
+      req.PostBody = jsonBody.ToString();
       return req;
     }
 
@@ -35,7 +37,7 @@ namespace TotemPoll.Web
       return new TextResponse(errorStr, "application/json") { StatusCode = e.StatusCode };
     }
 
-    public static JObject ParseJsonBody(Stream requestBody)
+    public static T ParseJsonBody<T>(Stream requestBody) where T : JContainer
     {
       string body;
       using (var sr = new StreamReader(requestBody))
@@ -50,7 +52,12 @@ namespace TotemPoll.Web
 
       try
       {
-        return JObject.Parse(body);
+        var result = JToken.Parse(body) as T;
+        if (result == null)
+        {
+          throw new FormatException($"A JSON request body of type '{typeof(T).Name}' is required.");
+        }
+        return result;
       }
       catch (JsonException ex)
       {

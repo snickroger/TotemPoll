@@ -84,6 +84,7 @@
   <ItemGroup>
     <Compile Include="Models\IValidatable.cs" />
     <Compile Include="Models\PollChoice.cs" />
+    <Compile Include="Models\PollChoiceDto.cs" />
     <Compile Include="Models\PollQuestion.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

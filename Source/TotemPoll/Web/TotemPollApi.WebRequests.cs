@@ -1,4 +1,5 @@
-﻿using Nancy.Responses;
+﻿using System.Collections.Generic;
+using Nancy.Responses;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Totem;
@@ -14,9 +15,9 @@ namespace TotemPoll.Web
   public class VoteRequest : WebApiAnonymousRequest
   {
     public Id PollId;
-    public Id ChoiceId;
+    public string PostBody;
 
-    SavingVote Start() => new SavingVote(PollId, ChoiceId);
+    SavingVote Start() => new SavingVote(PollId, PostBody);
 
     void When(VoteSaved e) => RespondOK("Vote Successful");
     void When(VoteNotSaved e) => Respond(TotemPollApi.GetErrorResponse(e));

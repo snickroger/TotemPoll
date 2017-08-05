@@ -1,7 +1,4 @@
 ﻿@Master['master.sshtml']
 @Section['Content']
-	@Partial['nav.sshtml'];
-	<div id="container">
-		<h1>Create Poll</h1>
-	</div>
+<h1>Create Poll</h1>
 @EndSection

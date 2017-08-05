@@ -1,4 +1,5 @@
-﻿using Nancy;
+﻿using System.Collections.Generic;
+using Nancy;
 using Totem;
 using TotemPoll.Models;
 
@@ -93,26 +94,24 @@ namespace TotemPoll
   public class SavingVote : Event
   {
     public Id PollId { get; }
-    public Id ChoiceId { get; }
-
     public string PostBody { get; }
 
-    public SavingVote(Id pollId, Id choiceId)
+    public SavingVote(Id pollId, string postBody)
     {
       PollId = pollId;
-      ChoiceId = choiceId;
+      PostBody = postBody;
     }
   }
 
   public class VoteSaved : Event
   {
     public Id PollId { get; }
-    public Id ChoiceId { get; }
+    public IEnumerable<Id> ChoiceIds { get; }
 
-    public VoteSaved(Id pollId, Id choiceId)
+    public VoteSaved(Id pollId, IEnumerable<Id> choiceIds)
     {
       PollId = pollId;
-      ChoiceId = choiceId;
+      ChoiceIds = choiceIds;
     }
   }
 

@@ -2,6 +2,7 @@
 using System.Linq;
 using Nancy;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Totem;
 using Totem.Runtime.Timeline;
 using TotemPoll.Models;
@@ -47,17 +48,48 @@ namespace TotemPoll.Topics
 
       if (_isExpired)
       {
-        Then(new VoteNotSaved(e.PollId, $"Poll '{e.PollId}' has expired", HttpStatusCode.UnprocessableEntity));
+        Then(new VoteNotSaved(e.PollId, $"Poll '{e.PollId}' has expired", HttpStatusCode.BadRequest));
         return;
       }
 
-      if (!_choices.Any(a => e.ChoiceId.Equals(a)))
+      PollChoiceDto choices;
+      try
       {
-        Then(new VoteNotSaved(e.PollId, $"Poll '{e.PollId}' does not contain choice '{e.ChoiceId}'", HttpStatusCode.NotFound));
+        choices = JsonConvert.DeserializeObject<PollChoiceDto>(e.PostBody);
+      }
+      catch (JsonException ex)
+      {
+        Then(new VoteNotSaved(e.PollId, "Could not read list of choices from post body.", HttpStatusCode.BadRequest));
         return;
       }
 
-      Then(new VoteSaved(e.PollId, e.ChoiceId));
+      var choiceIds = new List<Id>();
+      foreach (var choice in choices.Choices)
+      {
+        var id = Id.From(choice);
+
+        if (!_choices.Any(a => a.Equals(id)))
+        {
+          Then(new VoteNotSaved(e.PollId, $"Poll '{e.PollId}' does not contain choice '{choice}", HttpStatusCode.NotFound));
+          return;
+        }
+
+        choiceIds.Add(id);
+      }
+
+      if (choiceIds.Count == 0)
+      {
+        Then(new VoteNotSaved(e.PollId, "At least one choice must be supplied.", HttpStatusCode.BadRequest));
+        return;
+      }
+
+      if (!_allowMultiple && choiceIds.Count > 1)
+      {
+        Then(new VoteNotSaved(e.PollId, "This poll does not allow multiple choices to be selected at once.", HttpStatusCode.BadRequest));
+        return;
+      }
+
+      Then(new VoteSaved(e.PollId, choiceIds));
     }
 
     void When(PollDeleted e)
@@ -67,6 +99,7 @@ namespace TotemPoll.Topics
 
     bool _isDeleted;
     bool _isExpired;
+    bool _allowMultiple;
     List<Id> _choices;
 
     void Given(PollDeleted e)
@@ -83,6 +116,7 @@ namespace TotemPoll.Topics
     {
       _choices = new List<Id>();
       _choices.AddRange(e.CreatedPoll.Choices.Select(a=>a.Id));
+      _allowMultiple = e.CreatedPoll.SelectionType == SelectionType.MultipleChoice;
     }
   }
 }

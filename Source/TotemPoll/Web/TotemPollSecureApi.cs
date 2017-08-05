@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Security.Principal;
 using Nancy.Security;
+using Newtonsoft.Json.Linq;
 using Totem;
 using Totem.Web;
 
@@ -19,7 +20,7 @@ namespace TotemPoll.Web
 
     private static NewPollRequest ProcessNewPollRequest(NewPollRequest req, Stream postBody, IPrincipal principal)
     {
-      var jsonBody = TotemPollApi.ParseJsonBody(postBody);
+      var jsonBody = TotemPollApi.ParseJsonBody<JObject>(postBody);
       req.PostBody = jsonBody.ToString();
       req.Username = principal?.Identity?.Name;
       return req;
