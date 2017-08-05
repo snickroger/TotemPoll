@@ -1,0 +1,3 @@
+[submodule "Totem"]
+	path = Submodules/Totem
+	url = https://github.com/bwatts/Totem.git

@@ -1,0 +1,30 @@
+﻿@Master['master.sshtml']
+@Section['Content']
+	@Partial['nav.sshtml'];
+	<div id="container">
+	  <div id="loading" v-if="!loaded">
+      <i class="fa fa-4x fa-pulse fa-spinner"></i>
+    </div>
+
+    <div id="polls">
+      <div class="panel panel-primary" v-for="poll in polls">
+        <div class="panel-heading">
+          <h3 class="panel-title">{{poll.question}}</h3>
+        </div>
+        <div class="panel-body">
+          <form>
+            <div class="form-group">
+              <div class="radio" v-for="choice in poll.choices">
+                <label>
+                  <input type="radio" :name="poll.id" :id="choice.id" :value="choice.text">
+                  {{choice.text}}
+                </label>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+	</div>
+@EndSection
