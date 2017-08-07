@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Newtonsoft.Json;
 using Totem;
 
 namespace TotemPoll.Models
@@ -13,8 +14,10 @@ namespace TotemPoll.Models
     public string Question { get; set; }
     public DateTime? Expires { get; set; }
     public List<PollChoice> Choices { get; set; }
-    public int TotalVotes { get; private set;  }
+    public int TotalVotes { get; private set; }
     public string Location => $"/api/poll/{Id.ToText()}";
+    [JsonProperty(TypeNameHandling = TypeNameHandling.None)]
+    public object ChartData => GetChartData();
 
     public ValidationResult Validate()
     {
@@ -46,6 +49,16 @@ namespace TotemPoll.Models
     {
       TotalVotes++;
     }
+
+    internal object GetChartData()
+    {
+      return new
+      {
+        data = Choices.Select(a => a.Votes).ToArray(),
+        labels = Choices.Select(a => a.Text).ToArray()
+      };
+    }
+
   }
 
   public enum SelectionType

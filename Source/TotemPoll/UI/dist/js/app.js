@@ -28,15 +28,17 @@ function loadPollsFail() {
   setTimeout(loadPolls, 5000);
 }
 
+Vue.use(VueCharts);
 var app = new Vue({
   el: "#container",
   data: {
     loaded: false,
     noPolls: false,
-    polls: []
+    polls: [],
+    visibleGraphs: []
   },
   methods: {
-    saveVote: function(e, pollId) {
+    saveVote: function (e, pollId) {
       var selectedChoices = [];
       var els = jQuery(e.target).find("input:checked");
       for (var i = 0; i < els.length; i++) {
@@ -45,6 +47,16 @@ var app = new Vue({
 
       var data = { "choices": selectedChoices };
       jQuery.post(`/api/poll/${pollId}/vote`, JSON.stringify(data));
+    },
+    toggleGraph: function (poll) {
+      var vg = this.visibleGraphs;
+      for (var i = 0; i < vg.length; i++) {
+        if (vg[i] === poll.id) {
+          vg.splice(i, 1);
+          return;
+        }
+      }
+      vg.push(poll.id);
     }
   }
 });

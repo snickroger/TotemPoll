@@ -18,7 +18,8 @@
       <h3 class="panel-title">{{poll.question}}</h3>
     </div>
     <div class="panel-body">
-      <div class="col-md-11 col-md-offset-1">
+
+      <div class="col-md-11 col-md-offset-1" v-if="visibleGraphs.indexOf(poll.id) &lt; 0">
         <form v-on:submit.prevent="saveVote($event, poll.id)">
           <div class="form-group">
             <div class="radio" v-for="choice in poll.choices">
@@ -29,12 +30,20 @@
             </div>
           </div>
           <div class="form-group">
-            <button class="btn btn-default">View Results</button>
+            <button v-on:click.prevent="toggleGraph(poll)" class="btn btn-default">View Results</button>
             <button type="submit" class="btn btn-primary">Vote</button>
           </div>
           <small>{{poll.totalVotes}} total votes</small>
         </form>
       </div>
+
+      <div class="col-md-11 col-md-offset-1" v-else>
+        <div class="form-group">
+          <chartjs-doughnut :scalesdisplay="false" :width="500" :height="300" :labels="poll.chartData.labels" :data="poll.chartData.data"></chartjs-doughnut>
+          <button v-on:click.prevent="toggleGraph(poll)" class="btn btn-default">&laquo; Back</button>
+        </div>
+      </div>
+
     </div>
   </div>
 </div>

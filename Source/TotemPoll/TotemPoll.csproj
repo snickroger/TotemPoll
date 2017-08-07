@@ -130,6 +130,7 @@
   <ItemGroup>
     <Content Include="UI\dist\css\app.css" />
     <Content Include="UI\dist\js\app.js" />
+    <Content Include="UI\dist\js\vue-charts.js" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
