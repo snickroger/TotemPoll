@@ -6,7 +6,7 @@ using Totem;
 
 namespace TotemPoll.Models
 {
-  public class PollQuestion : IValidatable
+  public class PollQuestion
   {
     public Id Id { get; set; }
     public string CreatedBy { get; set; }
@@ -19,30 +19,23 @@ namespace TotemPoll.Models
     [JsonProperty(TypeNameHandling = TypeNameHandling.None)]
     public object ChartData => GetChartData();
 
-    public ValidationResult Validate()
+    public static PollQuestion From(PollQuestionDto dto, string username)
     {
-      var errors = new List<string>();
-      if (string.IsNullOrWhiteSpace(Question))
+      return new PollQuestion
       {
-        errors.Add($"'{nameof(Question)}' is required.");
-      }
+        Id = Id.FromGuid(),
+        CreatedBy = username,
+        SelectionType = dto.AllowMultiple ? SelectionType.MultipleChoice : SelectionType.SingleChoice,
+        Question = dto.Question,
+        Choices = dto.Choices.Select(c => new PollChoice(c)).ToList(),
+        Expires = dto.Expires.HasValue ? (DateTime?)(DateTime.UtcNow + TimeSpan.FromSeconds(dto.Expires.Value)) : null,
+        TotalVotes = 0
+      };
+    }
 
-      if (string.IsNullOrWhiteSpace(CreatedBy))
-      {
-        errors.Add("'Created polls require a valid user.");
-      }
-
-      if (Expires.HasValue && Expires.Value < DateTime.UtcNow)
-      {
-        errors.Add("Expiration time must be a time in the future.");
-      }
-
-      if (Choices?.Any() != true)
-      {
-        errors.Add("At least one choice for this poll question must be provided.");
-      }
-
-      return new ValidationResult(errors);
+    private PollQuestion()
+    {
+      
     }
 
     internal void IncrementTotalVotes()

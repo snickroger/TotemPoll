@@ -19,16 +19,16 @@ namespace TotemPoll.Topics
 
 	  void When(CreatingPoll e)
 	  {
-	    var newPoll = JsonConvert.DeserializeObject<PollQuestion>(e.PostBody);
-	    newPoll.CreatedBy = e.Username;
+	    var newPollDto = JsonConvert.DeserializeObject<PollQuestionDto>(e.PostBody);
 
-	    if (!newPoll.IsValid())
+	    if (!newPollDto.IsValid())
 	    {
-	      Then(new PollNotCreated(e.PollId, newPoll.AllErrors(), HttpStatusCode.UnprocessableEntity));
+	      Then(new PollNotCreated(e.PollId, newPollDto.AllErrors(), HttpStatusCode.UnprocessableEntity));
 	      return;
 	    }
 
-	    newPoll.Id = e.PollId;
+      var newPoll = PollQuestion.From(newPollDto, e.Username);
+      newPoll.Id = e.PollId;
 
 	    if (newPoll.Expires.HasValue)
 	    {

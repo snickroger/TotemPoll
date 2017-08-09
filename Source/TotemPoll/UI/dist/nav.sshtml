@@ -7,15 +7,17 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="#">Totem Poll</a>
+      <span class="navbar-brand">Totem Poll</span>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li @If.Model.HomeActive class="active" @EndIf><a href="/">List of Polls</a></li>
       </ul>
+      @If.Model.HomeActive
       <form class="navbar-form navbar-right">
         <a href="/create" class="btn btn-success">Create Poll</a>
       </form>
+      @EndIf
     </div>
   </div>
 </nav>

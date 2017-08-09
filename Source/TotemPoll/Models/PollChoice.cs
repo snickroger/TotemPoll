@@ -3,7 +3,7 @@ using Totem;
 
 namespace TotemPoll.Models
 {
-  public class PollChoice : IValidatable
+  public class PollChoice
   {
     public Id Id { get; set; }
     public string Text { get; set; }
@@ -14,17 +14,6 @@ namespace TotemPoll.Models
       Id = Id.FromGuid();
       Text = text;
       Votes = 0;
-    }
-
-    public ValidationResult Validate()
-    {
-      var errors = new List<string>();
-      if (string.IsNullOrWhiteSpace(Text))
-      {
-        errors.Add($"'{nameof(Text)}' is required.");
-      }
-
-      return new ValidationResult(errors);
     }
   }
 }
