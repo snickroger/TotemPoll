@@ -57,6 +57,9 @@ var app = new Vue({
         }
       }
       vg.push(poll.id);
+    },
+    selectionType: function (poll) {
+      return poll.selectionType === "SingleChoice" ? "radio" : "checkbox";
     }
   }
 });

@@ -14,33 +14,33 @@
               <div class="form-group">
                 <label for="question" class="col-lg-3 control-label">Question: </label>
                 <div class="col-lg-9">
-                  <textarea class="form-control" rows="3" id="question"></textarea>
+                  <textarea class="form-control" rows="3" id="question" v-model="question"></textarea>
                   <span class="help-block">Enter the poll question here.</span>
                 </div>
               </div>
               <div class="form-group">
                 <label for="allowMultiple" class="col-lg-3 control-label">Allow multiple selections?</label>
                 <div class="col-lg-9">
-                  <input type="checkbox" class="form-control" id="allowMultiple">
+                  <input type="checkbox" class="form-control" id="allowMultiple" v-model="allowMultiple">
                 </div>
               </div>
               <div class="form-group">
                 <label for="expires" class="col-lg-3 control-label">Expires after: </label>
                 <div class="col-lg-9">
-                  <select class="form-control" id="expires">
-                    <option>Never</option>
-                    <option>10 minutes</option>
-                    <option>30 minutes</option>
-                    <option>1 hour</option>
-                    <option>6 hours</option>
-                    <option>1 day</option>
+                  <select class="form-control" id="expires" @change="setExpiration($event)">
+                    <option value="-1">Never</option>
+                    <option value="600">10 minutes</option>
+                    <option value="1800">30 minutes</option>
+                    <option value="3600">1 hour</option>
+                    <option value="21600">6 hours</option>
+                    <option value="86400">1 day</option>
                   </select>
                 </div>
               </div>
               <div class="form-group">
                 <label for="choices" class="col-lg-3 control-label">Choices: </label>
                 <div class="col-lg-9">
-                  <textarea class="form-control" rows="3" id="choices"></textarea>
+                  <textarea class="form-control" rows="3" id="choices" @input="setChoices($event)"></textarea>
                   <span class="help-block">Enter the choices for the poll question, one per line.</span>
                 </div>
               </div>
@@ -63,15 +63,21 @@
         <div class="well well-lg">
           <pre>
 POST http://localhost:8080/api/poll HTTP/1.1
-User-Agent: Fiddler
+User-Agent: Totem Poll Web Form
 Content-Type: application/json
 Host: localhost:8080
-Content-Length: 89
+Content-Length: {{ getJson().length }}
 Authorization: Basic bnJvZ2VyczphYTFua3IxMA==
+
+{{ getJson() }}
           </pre>
         </div>
       </div>
     </div>
   </div>
 </div>
+@EndSection
+
+@Section['Scripts']
+  <script src="js/create.js"></script>
 @EndSection

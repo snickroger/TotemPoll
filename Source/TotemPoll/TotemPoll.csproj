@@ -130,7 +130,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="UI\dist\css\app.css" />
-    <Content Include="UI\dist\js\app.js" />
+    <Content Include="UI\dist\js\create.js" />
+    <Content Include="UI\dist\js\home.js" />
     <Content Include="UI\dist\js\vue-charts.js" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -22,9 +22,9 @@
       <div class="col-md-11 col-md-offset-1" v-if="visibleGraphs.indexOf(poll.id) &lt; 0">
         <form v-on:submit.prevent="saveVote($event, poll.id)">
           <div class="form-group">
-            <div class="radio" v-for="choice in poll.choices">
+            <div :class="selectionType(poll)" v-for="choice in poll.choices">
               <label>
-                <input type="radio" :name="poll.id" :id="choice.id" :value="choice.id" />
+                <input :type="selectionType(poll)" :name="poll.id" :id="choice.id" :value="choice.id" />
                 {{choice.text}}
               </label>
             </div>
@@ -48,4 +48,8 @@
   </div>
 </div>
 
+@EndSection
+
+@Section['Scripts']
+  <script src="js/home.js"></script>
 @EndSection
